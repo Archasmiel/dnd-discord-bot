@@ -20,7 +20,6 @@ public class Bot {
 
   public static final Logger logger = Logger.getGlobal();
   private final ShardManager shardManager;
-  public static Connection connection;
 
   public Bot(String token) throws LoginException {
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
@@ -41,7 +40,7 @@ public class Bot {
   public static void main(String[] args) {
     try {
       ManaController.readUsers();
-      Bot bot = new Bot(getConfig("token"));
+      new Bot(getConfig("token"));
     } catch (LoginException e) {
       logger.info("Bot login exception!");
     }

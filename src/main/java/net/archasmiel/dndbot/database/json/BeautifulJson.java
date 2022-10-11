@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.database;
+package net.archasmiel.dndbot.database.json;
 
 public class BeautifulJson {
 

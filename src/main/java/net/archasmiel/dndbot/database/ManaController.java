@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import net.archasmiel.dndbot.database.json.BeautifulJson;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.json.JSONWriter;
@@ -31,7 +33,13 @@ public class ManaController {
         jsonObject.keys().forEachRemaining(e -> {
             JSONObject jsonObj = jsonObject.getJSONObject(e);
             USERS.put(
-                e, new ManaUser(jsonObj.getInt("max"), jsonObj.getInt("curr"))
+                e, new ManaUser(
+                    jsonObj.getInt("max"),
+                    jsonObj.getInt("curr"),
+                    jsonObj.getString("class"),
+                    jsonObj.getInt("level"),
+                    jsonObj.getInt("param")
+                )
             );
           }
         );
@@ -58,11 +66,14 @@ public class ManaController {
 
         for (Map.Entry<String, ManaUser> entry: USERS.entrySet()) {
           jsonWriter
-              .key(entry.getKey())
-              .object()
-              .key("max").value(entry.getValue().getMaxMana())
-              .key("curr").value(entry.getValue().getCurrMana())
-              .endObject();
+            .key(entry.getKey())
+            .object()
+            .key("max").value(entry.getValue().getMaxMana())
+            .key("curr").value(entry.getValue().getCurrMana())
+            .key("class").value(entry.getValue().getClassName())
+            .key("level").value(entry.getValue().getLevel())
+            .key("param").value(entry.getValue().getParameter())
+            .endObject();
         }
         jsonWriter.endObject();
         os.write(
@@ -72,6 +83,20 @@ public class ManaController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+  }
+
+  public static Optional<ManaUser> getUser(String id) {
+    return !USERS.containsKey(id) ? Optional.empty()
+        : (!USERS.get(id).isFinished() ? Optional.empty() : Optional.of(USERS.get(id)));
+  }
+
+  public static boolean hasUser(String id) {
+    return USERS.containsKey(id);
+  }
+
+  public static boolean isFinished(String id) {
+    if (!hasUser(id)) return false;
+    return USERS.get(id).isFinished();
   }
 
 
