@@ -1,0 +1,6 @@
+# Project exclude paths
+/target/
+/.idea/
+mana.json
+users.json
+/src/main/resources/config.json
