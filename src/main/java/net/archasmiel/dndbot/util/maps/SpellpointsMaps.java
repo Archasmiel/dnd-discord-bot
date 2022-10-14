@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util.manainfo.maps;
+package net.archasmiel.dndbot.util.maps;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,7 +40,5 @@ public class SpellpointsMaps {
       { 11, 51 }, { 12, 60 }, { 13, 69 }, { 14, 78 }, { 15, 89 },
       { 16, 100 }, { 17, 111 }, { 18, 122 }, { 19, 133 }, { 20, 144 }
   }).collect(Collectors.toMap(e -> e[0], e -> e[1]));
-
-
 
 }

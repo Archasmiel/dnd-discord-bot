@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util.manainfo.maps;
+package net.archasmiel.dndbot.util.maps;
 
 import java.util.Map;
 import java.util.stream.Collectors;

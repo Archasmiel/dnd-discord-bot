@@ -19,7 +19,6 @@ import org.json.JSONTokener;
 public class Bot {
 
   public static final Logger logger = Logger.getGlobal();
-  private final ShardManager shardManager;
 
   public Bot(String token) throws LoginException {
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
@@ -32,7 +31,7 @@ public class Bot {
     );
     builder.setMemberCachePolicy(MemberCachePolicy.ALL);
     builder.setChunkingFilter(ChunkingFilter.ALL);
-    shardManager = builder.build();
+    ShardManager shardManager = builder.build();
 
     shardManager.addEventListener(new MessageListener());
   }
@@ -44,10 +43,6 @@ public class Bot {
     } catch (LoginException e) {
       logger.info("Bot login exception!");
     }
-  }
-
-  public ShardManager getShardManager() {
-    return shardManager;
   }
 
   public static String getConfig(String param) {

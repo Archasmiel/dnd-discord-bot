@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import net.archasmiel.dndbot.database.json.BeautifulJson;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -34,11 +33,11 @@ public class ManaController {
             JSONObject jsonObj = jsonObject.getJSONObject(e);
             USERS.put(
                 e, new ManaUser(
-                    jsonObj.getInt("max"),
-                    jsonObj.getInt("curr"),
-                    jsonObj.getString("class"),
-                    jsonObj.getInt("level"),
-                    jsonObj.getInt("param")
+                  jsonObj.getInt("max"),
+                  jsonObj.getInt("curr"),
+                  jsonObj.getString("class"),
+                  jsonObj.getInt("level"),
+                  jsonObj.getInt("param")
                 )
             );
           }
@@ -85,19 +84,8 @@ public class ManaController {
     }
   }
 
-  public static Optional<ManaUser> getUser(String id) {
-    return !USERS.containsKey(id) ? Optional.empty()
-        : (!USERS.get(id).isFinished() ? Optional.empty() : Optional.of(USERS.get(id)));
+  public static ManaUser get(String id) {
+    return USERS.getOrDefault(id, null);
   }
-
-  public static boolean hasUser(String id) {
-    return USERS.containsKey(id);
-  }
-
-  public static boolean isFinished(String id) {
-    if (!hasUser(id)) return false;
-    return USERS.get(id).isFinished();
-  }
-
 
 }

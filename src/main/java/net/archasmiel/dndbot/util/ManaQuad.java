@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util.manamath;
+package net.archasmiel.dndbot.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
