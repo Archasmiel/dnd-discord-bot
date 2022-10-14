@@ -1,9 +1,6 @@
 package net.archasmiel.dndbot;
 
 import java.io.InputStream;
-import java.sql.Connection;
-import java.util.logging.Logger;
-import javax.security.auth.login.LoginException;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.listener.MessageListener;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -18,10 +15,11 @@ import org.json.JSONTokener;
 
 public class Bot {
 
-  public static final Logger logger = Logger.getGlobal();
+  public static void main(String[] args) {
+    ManaController.readUsers();
 
-  public Bot(String token) throws LoginException {
-    DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
+    DefaultShardManagerBuilder builder = DefaultShardManagerBuilder
+        .createDefault(getConfig("token"));
     builder.setStatus(OnlineStatus.ONLINE);
     builder.setActivity(Activity.watching("DnD 3.5e"));
     builder.enableIntents(
@@ -31,18 +29,9 @@ public class Bot {
     );
     builder.setMemberCachePolicy(MemberCachePolicy.ALL);
     builder.setChunkingFilter(ChunkingFilter.ALL);
+
     ShardManager shardManager = builder.build();
-
     shardManager.addEventListener(new MessageListener());
-  }
-
-  public static void main(String[] args) {
-    try {
-      ManaController.readUsers();
-      new Bot(getConfig("token"));
-    } catch (LoginException e) {
-      logger.info("Bot login exception!");
-    }
   }
 
   public static String getConfig(String param) {

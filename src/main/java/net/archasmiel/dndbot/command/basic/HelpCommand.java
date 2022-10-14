@@ -9,11 +9,10 @@ public class HelpCommand extends Command {
   public static final Command INSTANCE = new HelpCommand();
   private static final SlashCommandData DATA = Commands.slash("35help", "Допомога з ботом");
   private static final String MESSAGE = """
-      /35help - цей гайд-допомога
-      /35signup <Class> <level> <param> - задати корстувача в системі
-      /35stats - отримати дані корстувача в системі
-      /35newday - отримати повний обсяг мани (на новий день)
-      /35cast <spellLevel> - закстувати заклинання та відняти ману відносно системи
+      /35signup <class> <level> <param> - задати користувача в системі
+      /35stats - отримати дані про користувача
+      /35newday - отримати повний обсяг мани (новий день)
+      /35cast <spellLevel> - застосувати заклинання та відняти ману
       /35levelup - +1 рівень до персонажа
       /35leveldown - -1 рівень до персонажа
       /35paramup - +1 очко параметра до персонажа
