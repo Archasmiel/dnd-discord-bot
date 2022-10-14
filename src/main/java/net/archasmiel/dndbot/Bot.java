@@ -1,6 +1,8 @@
 package net.archasmiel.dndbot;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.listener.MessageListener;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -10,16 +12,14 @@ import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 public class Bot {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     ManaController.readUsers();
 
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder
-        .createDefault(getConfig("token"));
+        .createDefault(getToken());
     builder.setStatus(OnlineStatus.ONLINE);
     builder.setActivity(Activity.watching("DnD 3.5e"));
     builder.enableIntents(
@@ -34,11 +34,10 @@ public class Bot {
     shardManager.addEventListener(new MessageListener());
   }
 
-  public static String getConfig(String param) {
-    InputStream is = Bot.class.getResourceAsStream("/config.json");
+  public static String getToken() throws IOException {
+    InputStream is = Bot.class.getResourceAsStream("/token");
     if (is == null) throw new IllegalStateException("Token read exception!");
-
-    return new JSONObject(new JSONTokener(is)).getString(param);
+    return new String(is.readAllBytes(), StandardCharsets.UTF_8);
   }
 
 }

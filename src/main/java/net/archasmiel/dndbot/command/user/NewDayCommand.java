@@ -6,21 +6,13 @@ import net.archasmiel.dndbot.database.ManaUser;
 import net.archasmiel.dndbot.exception.NoManaUserFound;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class NewDayCommand extends Command {
 
-  public static final Command INSTANCE = new NewDayCommand();
-  private static final SlashCommandData DATA =
-      Commands.slash("35newday", "Отримати повний обсяг мани");
-
-  private NewDayCommand() {
-
-  }
-
-  @Override
-  public SlashCommandData getData() {
-    return DATA;
+  public NewDayCommand() {
+    super(
+      Commands.slash("35newday", "Отримати повний обсяг мани")
+    );
   }
 
   @Override

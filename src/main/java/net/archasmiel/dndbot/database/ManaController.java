@@ -1,17 +1,17 @@
 package net.archasmiel.dndbot.database;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import net.archasmiel.dndbot.database.json.BeautifulJson;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
 
 public class ManaController {
 
@@ -19,66 +19,19 @@ public class ManaController {
   public static final Map<String, ManaUser> USERS = new HashMap<>();
 
   public static void readUsers() {
-    try {
-      File file = new File(FILENAME);
-      if (file.createNewFile()){
-        try (FileWriter writer = new FileWriter(file)) {
-          writer.append("{\n").append("}");
-        }
-      }
-
-      try (FileInputStream is = new FileInputStream(file)) {
-        JSONObject jsonObject = new JSONObject(new JSONTokener(is));
-        jsonObject.keys().forEachRemaining(e -> {
-            JSONObject jsonObj = jsonObject.getJSONObject(e);
-            USERS.put(
-                e, new ManaUser(
-                  jsonObj.getInt("max"),
-                  jsonObj.getInt("curr"),
-                  jsonObj.getString("class"),
-                  jsonObj.getInt("level"),
-                  jsonObj.getInt("param")
-                )
-            );
-          }
-        );
-      }
-
+    try (Reader reader = Files.newBufferedReader(Paths.get(FILENAME))) {
+      USERS.putAll(new Gson().fromJson(reader, new TypeToken<HashMap<String, ManaUser>>(){}.getType()));
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
   public static void writeUsers() {
-    try {
-      File file = new File(FILENAME);
-      if (file.createNewFile()){
-        try (FileWriter writer = new FileWriter(file)) {
-          writer.append("{\n").append("}");
-        }
-      }
-
-      try (FileOutputStream os = new FileOutputStream(file)) {
-        StringWriter writer = new StringWriter();
-        JSONWriter jsonWriter = new JSONWriter(writer);
-        jsonWriter.object();
-
-        for (Map.Entry<String, ManaUser> entry: USERS.entrySet()) {
-          jsonWriter
-            .key(entry.getKey())
-            .object()
-            .key("max").value(entry.getValue().getMaxMana())
-            .key("curr").value(entry.getValue().getCurrMana())
-            .key("class").value(entry.getValue().getClassName())
-            .key("level").value(entry.getValue().getLevel())
-            .key("param").value(entry.getValue().getParameter())
-            .endObject();
-        }
-        jsonWriter.endObject();
-        os.write(
-            BeautifulJson.beautifulJSON(writer.toString()).getBytes()
-        );
-      }
+    try (Writer writer = new FileWriter(FILENAME)) {
+      Gson gson = new GsonBuilder().setPrettyPrinting().create();
+      JsonObject object = new JsonObject();
+      USERS.forEach((s, user) -> object.add(s, user.asJsonObject()));
+      gson.toJson(object, writer);
     } catch (IOException e) {
       e.printStackTrace();
     }

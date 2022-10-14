@@ -2,12 +2,9 @@ package net.archasmiel.dndbot.command.basic;
 
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class HelpCommand extends Command {
 
-  public static final Command INSTANCE = new HelpCommand();
-  private static final SlashCommandData DATA = Commands.slash("35help", "Допомога з ботом");
   private static final String MESSAGE = """
       /35signup <class> <level> <param> - задати користувача в системі
       /35stats - отримати дані про користувача
@@ -19,13 +16,10 @@ public class HelpCommand extends Command {
       /35paramdown - -1 очко параметра до персонажа
       """;
 
-  private HelpCommand() {
-
-  }
-
-  @Override
-  public SlashCommandData getData() {
-    return DATA;
+  public HelpCommand() {
+    super(
+      Commands.slash("35help", "Допомога з ботом")
+    );
   }
 
   @Override

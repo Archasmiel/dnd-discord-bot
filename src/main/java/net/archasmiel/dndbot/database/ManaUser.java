@@ -1,5 +1,6 @@
 package net.archasmiel.dndbot.database;
 
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,16 +10,16 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ManaUser {
 
-  public int maxMana;
-  public int currMana;
   public String className;
   public int level;
-  public int parameter;
+  public int param;
+  public int currMana;
+  public int maxMana;
 
-  public void setAll(String className, int level, int parameter, int maxMana, int currMana) {
+  public void setAll(String className, int level, int param, int maxMana, int currMana) {
     this.className = className;
     this.level = level;
-    this.parameter = parameter;
+    this.param = param;
     this.maxMana = maxMana;
     this.currMana = currMana;
   }
@@ -33,10 +34,20 @@ public class ManaUser {
     this.currMana = mana;
   }
 
+  public JsonObject asJsonObject() {
+    JsonObject obj = new JsonObject();
+    obj.addProperty("className", className);
+    obj.addProperty("level", level);
+    obj.addProperty("param", param);
+    obj.addProperty("currMana", currMana);
+    obj.addProperty("maxMana", maxMana);
+    return obj;
+  }
+
   @Override
   public String toString() {
-    return String.format("***мана: %d/%d***, ***клас: %s***, ***рівень: %d***, ***параметр: %d***",
-        currMana, maxMana, className.toLowerCase(), level, parameter);
+    return String.format("*`мана: %d/%d`*, *`клас: %s`*, *`рівень: %d`*, *`параметр: %d`*",
+        currMana, maxMana, className.toLowerCase(), level, param);
   }
 
 }

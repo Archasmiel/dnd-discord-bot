@@ -1,26 +1,17 @@
-package net.archasmiel.dndbot.command.user;
+package net.archasmiel.dndbot.command.basic;
 
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.ManaUser;
 import net.archasmiel.dndbot.exception.NoManaUserFound;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class GetUserCommand extends Command {
 
-  public static final Command INSTANCE = new GetUserCommand();
-  private static final SlashCommandData DATA =
-      Commands.slash("35stats", "Отримати дані корстувача в системі");
-
-  private GetUserCommand() {
-
-  }
-
-  @Override
-  public SlashCommandData getData() {
-    return DATA;
+  public GetUserCommand() {
+    super(
+      Commands.slash("35stats", "Отримати дані корстувача в системі")
+    );
   }
 
   @Override

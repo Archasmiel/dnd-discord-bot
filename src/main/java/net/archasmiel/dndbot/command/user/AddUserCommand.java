@@ -1,39 +1,42 @@
 package net.archasmiel.dndbot.command.user;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.ManaUser;
 import net.archasmiel.dndbot.exception.IllegalParameters;
 import net.archasmiel.dndbot.util.Classes;
 import net.archasmiel.dndbot.util.ManaQuad;
+import net.archasmiel.dndbot.util.OptionMapper;
+import net.dv8tion.jda.api.interactions.commands.Command.Choice;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
-import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
 public class AddUserCommand extends Command {
 
-  public static final Command INSTANCE = new AddUserCommand();
-  private static final List<OptionData> OPTIONS = List.of(
-      new OptionData(OptionType.STRING, "class", "Клас персонажа"),
-      new OptionData(OptionType.INTEGER, "level", "Рівень персонажа"),
-      new OptionData(OptionType.INTEGER, "param", "Параметр персонажа, відповідний за ману")
-  );
-  private static final SlashCommandData DATA =
-      Commands.slash("35signup", "Зареєструвати свого персонажа в системі")
-          .addOptions(OPTIONS);
-
-  private AddUserCommand() {
-
-  }
-
-  @Override
-  public SlashCommandData getData() {
-    return DATA;
+  public AddUserCommand() {
+    super(
+      Commands.slash("35signup", "Зареєструвати свого персонажа в системі").addOptions(
+        new OptionData(OptionType.STRING, "class", "Клас персонажа", true)
+            .addChoices(
+                Arrays.stream(Classes.values())
+                    .map(e -> new Choice(e.getName(), e.getName().toUpperCase()))
+                    .collect(Collectors.toList())
+            ),
+        new OptionData(OptionType.INTEGER, "level", "Рівень персонажа", true)
+            .addChoices(
+                IntStream.range(1, 21).boxed()
+                    .map(e -> new Choice(Integer.toString(e), e))
+                    .collect(Collectors.toList())
+            ),
+        new OptionData(OptionType.INTEGER, "param", "Кількість параметра персонажа, відповідного за ману", true)
+      )
+    );
   }
 
   @Override
@@ -41,22 +44,18 @@ public class AddUserCommand extends Command {
     String msg;
 
     try {
-      if (interaction.getOptions().size() != 3) {
-        throw new IllegalParameters();
-      }
+      Optional<String> className = OptionMapper.mapToStr(interaction.getOption("class"));
+      Optional<Integer> level = OptionMapper.mapToInt(interaction.getOption("level"));
+      Optional<Integer> param = OptionMapper.mapToInt(interaction.getOption("param"));
+      if (className.isEmpty() || level.isEmpty() || param.isEmpty()) throw new IllegalParameters();
 
-      ManaUser user = new ManaUser(0, 0, null, 0, 0);
-      String className = Objects.requireNonNull(interaction.getOption("class"))
-          .getAsString().toUpperCase();
-      int level = Objects.requireNonNull(interaction.getOption("level")).getAsInt();
-      int param = Objects.requireNonNull(interaction.getOption("param")).getAsInt();
-
-      Optional<ManaQuad> manaQuad = Classes.valueOf(className).getMana(level, param);
+      ManaUser user = new ManaUser(null, 0, 0, 0, 0);
+      Optional<ManaQuad> manaQuad = Classes.valueOf(className.get()).getMana(level.get(), param.get());
       if (manaQuad.isEmpty()) {
         throw new IllegalParameters();
       }
 
-      user.setAll(className, level, param,
+      user.setAll(className.get(), level.get(), param.get(),
           manaQuad.get().getMaxMana(), manaQuad.get().getMaxMana());
 
       ManaController.USERS.put(interaction.getUser().getId(), user);
