@@ -17,24 +17,32 @@ import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+/**
+ * Creates user on '/35signup [args...]'.
+ */
 public class AddUserCommand extends Command {
 
+  /**
+   * Constructor for command.
+   * Used for MessageListener one-time creation and other purposes.
+   */
   public AddUserCommand() {
     super(
-      Commands.slash("35signup", "Зареєструвати свого персонажа в системі").addOptions(
-        new OptionData(OptionType.STRING, "class", "Клас персонажа", true)
+        Commands.slash("35signup", "Зареєструвати свого персонажа в системі").addOptions(
+            new OptionData(OptionType.STRING, "class", "Клас персонажа", true)
             .addChoices(
                 Arrays.stream(Classes.values())
                     .map(e -> new Choice(e.getName(), e.getName().toUpperCase()))
                     .collect(Collectors.toList())
             ),
-        new OptionData(OptionType.INTEGER, "level", "Рівень персонажа", true)
+            new OptionData(OptionType.INTEGER, "level", "Рівень персонажа", true)
             .addChoices(
                 IntStream.range(1, 21).boxed()
                     .map(e -> new Choice(Integer.toString(e), e))
                     .collect(Collectors.toList())
             ),
-        new OptionData(OptionType.INTEGER, "param", "Кількість параметра персонажа, відповідного за ману", true)
+            new OptionData(OptionType.INTEGER, "param",
+                "Кількість параметра персонажа, відповідного за ману", true)
       )
     );
   }
@@ -44,26 +52,27 @@ public class AddUserCommand extends Command {
     String msg;
 
     try {
-      Optional<String> className = OptionMapper.mapToStr(interaction.getOption("class"));
-      Optional<Integer> level = OptionMapper.mapToInt(interaction.getOption("level"));
-      Optional<Integer> param = OptionMapper.mapToInt(interaction.getOption("param"));
-      if (className.isEmpty() || level.isEmpty() || param.isEmpty()) throw new IllegalParameters();
-
-      ManaUser user = new ManaUser(null, 0, 0, 0, 0);
-      Optional<ManaQuad> manaQuad = Classes.valueOf(className.get()).getMana(level.get(), param.get());
-      if (manaQuad.isEmpty()) {
+      Optional<String> className = OptionMapper.INSTANCE.mapToStr(interaction.getOption("class"));
+      Optional<Integer> level = OptionMapper.INSTANCE.mapToInt(interaction.getOption("level"));
+      Optional<Integer> param = OptionMapper.INSTANCE.mapToInt(interaction.getOption("param"));
+      if (className.isEmpty() || level.isEmpty() || param.isEmpty()) {
         throw new IllegalParameters();
       }
+
+      ManaUser user = new ManaUser(null, 0, 0, 0, 0);
+      Optional<ManaQuad> manaQuad = Classes.valueOf(className.get())
+          .getMana(level.get(), param.get());
+      manaQuad.orElseThrow(IllegalParameters::new);
 
       user.setAll(className.get(), level.get(), param.get(),
           manaQuad.get().getMaxMana(), manaQuad.get().getMaxMana());
 
-      ManaController.USERS.put(interaction.getUser().getId(), user);
-      ManaController.writeUsers();
+      ManaController.INSTANCE.users.put(interaction.getUser().getId(), user);
+      ManaController.INSTANCE.writeUsers();
 
       msg = String.format("<@%s>, встановлено максимальну ману в розмірі %d + %d = %d",
-          interaction.getUser().getId(), manaQuad.get().getSpellpoints(),
-          manaQuad.get().getBonusSpellpoints(), manaQuad.get().getMaxMana());
+          interaction.getUser().getId(), manaQuad.get().getSpellPoints(),
+          manaQuad.get().getBonusSpellPoints(), manaQuad.get().getMaxMana());
     } catch (Exception e) {
       msg = e.getMessage();
     }

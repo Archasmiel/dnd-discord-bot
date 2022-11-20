@@ -1,6 +1,7 @@
 package net.archasmiel.dndbot.command.user;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.archasmiel.dndbot.command.basic.Command;
@@ -15,11 +16,18 @@ import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+/**
+ * Command for spell casting.
+ */
 public class CastCommand extends Command {
 
+  /**
+   * Constructor for command.
+   * Used for MessageListener one-time creation and other purposes.
+   */
   public CastCommand() {
     super(
-      Commands.slash("35cast", "Викликати заклинання і відняти ману")
+        Commands.slash("35cast", "Викликати заклинання і відняти ману")
         .addOptions(
             new OptionData(OptionType.INTEGER, "level", "Рівень заклинання", true)
                 .addChoices(
@@ -33,13 +41,13 @@ public class CastCommand extends Command {
 
   @Override
   public void process(SlashCommandInteraction interaction) {
+    String id = interaction.getUser().getId();
     String msg;
 
     try {
-      ManaUser user = ManaController.get(interaction.getUser().getId());
-      if (user == null) {
-        throw new NoManaUserFound();
-      }
+      Optional<ManaUser> manaUser = ManaController.INSTANCE.get(id);
+      manaUser.orElseThrow(NoManaUserFound::new);
+
       if (interaction.getOptions().size() != 1) {
         throw new IllegalParameters();
       }
@@ -48,16 +56,19 @@ public class CastCommand extends Command {
       if (spellLevel < 0 || spellLevel > 9) {
         throw new IllegalParameters();
       }
-      int mana = SpellCost.getValue(spellLevel);
+      int mana = SpellCost.INSTANCE.getValue(spellLevel);
 
+      ManaUser user = manaUser.get();
       if (user.getCurrMana() >= mana) {
         user.setCurrMana(user.getCurrMana() - mana);
-        ManaController.writeUsers();
-        msg = String.format("<@%s>, заклинання **%d рівня** успішно використано. Зараз в тебе %d/%d мани.",
-            interaction.getUser().getId(), spellLevel, user.getCurrMana(), user.getMaxMana());
+        ManaController.INSTANCE.writeUsers();
+        msg = String.format(
+            "<@%s>, заклинання **%d рівня** успішно використано. Зараз в тебе %d/%d мани.",
+            id, spellLevel, user.getCurrMana(), user.getMaxMana());
       } else {
-        msg = String.format("<@%s>, мани не достатньо для заклинання %d рівня. Зараз в тебе %d/%d мани.",
-            interaction.getUser().getId(), spellLevel, user.getCurrMana(), user.getMaxMana());
+        msg = String.format(
+            "<@%s>, мани не достатньо для заклинання %d рівня. Зараз в тебе %d/%d мани.",
+            id, spellLevel, user.getCurrMana(), user.getMaxMana());
       }
     } catch (Exception e) {
       msg = e.getMessage();
@@ -65,4 +76,5 @@ public class CastCommand extends Command {
 
     interaction.reply(msg).queue();
   }
+
 }

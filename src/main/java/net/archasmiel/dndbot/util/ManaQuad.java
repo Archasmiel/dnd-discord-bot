@@ -4,14 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Data structure for mana details.
+ */
 @Getter
 @Setter
 @AllArgsConstructor
 public class ManaQuad {
 
-  private int spellpoints;
+  private int spellPoints;
   private int maxSpellLevel;
-  private int bonusSpellpoints;
+  private int bonusSpellPoints;
   private int maxMana;
 
 }

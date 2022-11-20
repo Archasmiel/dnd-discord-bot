@@ -5,6 +5,9 @@ import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 
+/**
+ * Abstract custom Command class.
+ */
 public abstract class Command {
 
   private final SlashCommandData data;
@@ -15,20 +18,20 @@ public abstract class Command {
 
   public abstract void process(SlashCommandInteraction interaction);
 
-  public SlashCommandData getData() {
+  public SlashCommandData data() {
     return data;
   }
 
-  public String getName() {
-    return getData().getName();
+  public String name() {
+    return data().getName();
   }
 
-  public String getDescr(){
-    return getData().getDescription();
+  public String description() {
+    return data().getDescription();
   }
 
-  public List<OptionData> getOptions(){
-    return getData().getOptions();
+  public List<OptionData> options() {
+    return data().getOptions();
   }
 
 }

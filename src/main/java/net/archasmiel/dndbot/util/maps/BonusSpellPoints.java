@@ -1,8 +1,13 @@
 package net.archasmiel.dndbot.util.maps;
 
-public class BonusSpellpoints {
+/**
+ * Bonus spell points for mana system.
+ */
+public class BonusSpellPoints {
 
-  public static final Integer[][] TABLE = {
+  public static final BonusSpellPoints INSTANCE = new BonusSpellPoints();
+
+  public final Integer[][] table = {
       { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
       { 0, 1, 4, 4, 4, 4, 4, 4, 4, 4 },
       { 0, 1, 4, 9, 9, 9, 9, 9, 9, 9 },
@@ -25,8 +30,8 @@ public class BonusSpellpoints {
       { 0, 5, 20, 45, 80, 116, 160, 212, 272, 323 }
   };
 
-  public static Integer getValue(int maxSpellNum, int parameterNum) {
-    return TABLE[(parameterNum - 12) / 2][maxSpellNum];
+  public Integer getValue(int maxSpellNum, int parameterNum) {
+    return table[(parameterNum - 12) / 2][maxSpellNum];
   }
 
 }

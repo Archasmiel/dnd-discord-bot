@@ -13,15 +13,22 @@ import net.dv8tion.jda.api.sharding.ShardManager;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
+/**
+ * Bot starting class.
+ */
 public class Bot {
 
+  /**
+   * Bot starting method.
+
+   * @param args default main method arguments
+   */
   public static void main(String[] args) throws IOException {
-    ManaController.readUsers();
+    ManaController.INSTANCE.readUsers();
 
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder
         .createDefault(getToken());
     builder.setStatus(OnlineStatus.ONLINE);
-    builder.setActivity(Activity.watching("DnD 3.5e"));
     builder.enableIntents(
         GatewayIntent.GUILD_MEMBERS,
         GatewayIntent.GUILD_MESSAGES,
@@ -34,10 +41,23 @@ public class Bot {
     shardManager.addEventListener(new MessageListener());
   }
 
+  /**
+   * Bot token getting method.
+   * Token must be in 'resources/token' file.
+   * 'token' is a file without extension.
+   * 'resources' is a default Maven directory.
+
+   * @return String value with token
+   */
   public static String getToken() throws IOException {
-    InputStream is = Bot.class.getResourceAsStream("/token");
-    if (is == null) throw new IllegalStateException("Token read exception!");
-    return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+    try (InputStream is = Bot.class.getResourceAsStream("/token")) {
+      if (is == null) {
+        throw new IllegalStateException("Token read exception!");
+      }
+      return new String(is.readAllBytes(), StandardCharsets.UTF_8);
+    } catch (Exception e) {
+      throw new IOException();
+    }
   }
 
 }
