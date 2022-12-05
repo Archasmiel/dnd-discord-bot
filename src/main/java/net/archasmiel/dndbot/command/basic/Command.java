@@ -23,15 +23,15 @@ public abstract class Command {
   }
 
   public String name() {
-    return data().getName();
+    return data.getName();
   }
 
   public String description() {
-    return data().getDescription();
+    return data.getDescription();
   }
 
   public List<OptionData> options() {
-    return data().getOptions();
+    return data.getOptions();
   }
 
 }

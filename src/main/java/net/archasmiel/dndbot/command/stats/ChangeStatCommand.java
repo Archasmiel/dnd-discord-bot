@@ -3,10 +3,10 @@ package net.archasmiel.dndbot.command.stats;
 import java.util.Optional;
 import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
-import net.archasmiel.dndbot.database.ManaUser;
+import net.archasmiel.dndbot.database.objects.ManaUser;
 import net.archasmiel.dndbot.exception.IllegalParameters;
 import net.archasmiel.dndbot.exception.NoManaUserFound;
-import net.archasmiel.dndbot.util.Classes;
+import net.archasmiel.dndbot.util.ClassesDnD;
 import net.archasmiel.dndbot.util.ManaQuad;
 import net.archasmiel.dndbot.util.OptionMapper;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -25,10 +25,10 @@ public class ChangeStatCommand extends Command {
    */
   public ChangeStatCommand() {
     super(
-        Commands.slash("35changestat", "Команда для зміни параметра").addOptions(
-            new OptionData(OptionType.STRING, "name", "Назва характеристики", true)
+        Commands.slash("35changestat", "Команда для изменения параметра").addOptions(
+            new OptionData(OptionType.STRING, "name", "Название характеристики", true)
               .addChoice("level", "level").addChoice("param", "param"),
-            new OptionData(OptionType.INTEGER, "value", "Кількість очків/рівнів", true)
+            new OptionData(OptionType.INTEGER, "value", "Кол-во очков/уровень", true)
       )
     );
   }
@@ -39,9 +39,10 @@ public class ChangeStatCommand extends Command {
     String msg;
 
     try {
-      Optional<ManaUser> manaUser = ManaController.INSTANCE.get(id);
-      manaUser.orElseThrow(NoManaUserFound::new);
-      ManaUser user = manaUser.get();
+      ManaController.INSTANCE.discordUserCheck(id);
+      String muid = ManaController.INSTANCE.discordUsers.get(id).getManaUserId();
+      Optional<ManaUser> manaUser = ManaController.INSTANCE.getManaUser(muid);
+      ManaUser user = manaUser.orElseThrow(NoManaUserFound::new);
 
       Optional<String> statName = OptionMapper.INSTANCE.mapToStr(interaction.getOption("name"));
       Optional<Integer> value = OptionMapper.INSTANCE.mapToInt(interaction.getOption("value"));
@@ -50,15 +51,16 @@ public class ChangeStatCommand extends Command {
       }
 
       statCapping(user, statName.get(), value.get());
-      Optional<ManaQuad> manaQuad = Classes.valueOf(user.getClassName())
+      Optional<ManaQuad> manaQuadOpt = ClassesDnD.valueOf(user.getClassName())
           .getMana(user.getLevel(), user.getParam());
-      manaQuad.orElseThrow(IllegalParameters::new);
-      user.setMana(manaQuad.get().getMaxMana());
-      ManaController.INSTANCE.writeUsers();
+      ManaQuad manaQuad = manaQuadOpt.orElseThrow(IllegalParameters::new);
+      user.setMana(manaQuad.getMaxMana());
+      ManaController.INSTANCE.saveDiscordUser(id);
+      ManaController.INSTANCE.saveManaUser(muid);
 
-      msg = String.format("<@%s>, операцію завершено, мана тепер %d + %d = %d",
-          id, manaQuad.get().getSpellPoints(),
-          manaQuad.get().getBonusSpellPoints(), manaQuad.get().getMaxMana());
+      msg = String.format("<@%s>, операцию завершено, маны теперь %d + %d = %d",
+          id, manaQuad.getSpellPoints(),
+          manaQuad.getBonusSpellPoints(), manaQuad.getMaxMana());
     } catch (Exception e) {
       msg = e.getMessage();
     }

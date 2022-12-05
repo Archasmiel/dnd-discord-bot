@@ -15,6 +15,9 @@ public class ManaQuad {
   private int spellPoints;
   private int maxSpellLevel;
   private int bonusSpellPoints;
-  private int maxMana;
+
+  public int getMaxMana() {
+    return spellPoints + bonusSpellPoints;
+  }
 
 }

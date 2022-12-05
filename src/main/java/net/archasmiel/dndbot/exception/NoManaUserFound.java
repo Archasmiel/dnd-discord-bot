@@ -6,7 +6,7 @@ package net.archasmiel.dndbot.exception;
 public class NoManaUserFound extends Exception {
 
   public NoManaUserFound() {
-    super("Не знайдено користувача в системі!");
+    super("Не найдено персонажа в системе");
   }
 
 }

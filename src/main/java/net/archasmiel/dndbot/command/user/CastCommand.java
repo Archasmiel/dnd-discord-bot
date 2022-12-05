@@ -2,14 +2,13 @@ package net.archasmiel.dndbot.command.user;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
-import net.archasmiel.dndbot.database.ManaUser;
+import net.archasmiel.dndbot.database.objects.ManaUser;
 import net.archasmiel.dndbot.exception.IllegalParameters;
 import net.archasmiel.dndbot.exception.NoManaUserFound;
-import net.archasmiel.dndbot.util.SpellCost;
+import net.archasmiel.dndbot.util.maps.SpellCost;
 import net.dv8tion.jda.api.interactions.commands.Command.Choice;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -27,13 +26,13 @@ public class CastCommand extends Command {
    */
   public CastCommand() {
     super(
-        Commands.slash("35cast", "Викликати заклинання і відняти ману")
+        Commands.slash("35cast", "Применить заклинание нек-во уровня")
         .addOptions(
-            new OptionData(OptionType.INTEGER, "level", "Рівень заклинання", true)
+            new OptionData(OptionType.INTEGER, "level", "Круг заклинания", true)
                 .addChoices(
                     IntStream.range(0, 10).boxed()
                         .map(e -> new Choice(Integer.toString(e), e))
-                        .collect(Collectors.toList())
+                        .toList()
                 )
         )
     );
@@ -45,8 +44,10 @@ public class CastCommand extends Command {
     String msg;
 
     try {
-      Optional<ManaUser> manaUser = ManaController.INSTANCE.get(id);
-      manaUser.orElseThrow(NoManaUserFound::new);
+      ManaController.INSTANCE.discordUserCheck(id);
+      String muid = ManaController.INSTANCE.discordUsers.get(id).getManaUserId();
+      Optional<ManaUser> manaUserOpt = ManaController.INSTANCE.getManaUser(muid);
+      ManaUser manaUser = manaUserOpt.orElseThrow(NoManaUserFound::new);
 
       if (interaction.getOptions().size() != 1) {
         throw new IllegalParameters();
@@ -58,17 +59,17 @@ public class CastCommand extends Command {
       }
       int mana = SpellCost.INSTANCE.getValue(spellLevel);
 
-      ManaUser user = manaUser.get();
-      if (user.getCurrMana() >= mana) {
-        user.setCurrMana(user.getCurrMana() - mana);
-        ManaController.INSTANCE.writeUsers();
+      if (manaUser.getCurrMana() >= mana) {
+        manaUser.setCurrMana(manaUser.getCurrMana() - mana);
+        ManaController.INSTANCE.saveDiscordUser(id);
+        ManaController.INSTANCE.saveManaUser(muid);
         msg = String.format(
-            "<@%s>, заклинання **%d рівня** успішно використано. Зараз в тебе %d/%d мани.",
-            id, spellLevel, user.getCurrMana(), user.getMaxMana());
+            "<@%s>, заклинание **%d круга** успешно использовано. Сейчас у тебя `%d/%d` маны.",
+            id, spellLevel, manaUser.getCurrMana(), manaUser.getMaxMana());
       } else {
         msg = String.format(
-            "<@%s>, мани не достатньо для заклинання %d рівня. Зараз в тебе %d/%d мани.",
-            id, spellLevel, user.getCurrMana(), user.getMaxMana());
+            "<@%s>, маны не достаточно для заклинания %d круга. Сейчас у тебя `%d/%d` маны.",
+            id, spellLevel, manaUser.getCurrMana(), manaUser.getMaxMana());
       }
     } catch (Exception e) {
       msg = e.getMessage();

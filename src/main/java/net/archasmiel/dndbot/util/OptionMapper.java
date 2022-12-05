@@ -18,11 +18,10 @@ public class OptionMapper {
    * @return optional of Integer
    */
   public Optional<Integer> mapToInt(OptionMapping mapping) {
-    if (mapping == null) {
+    if (mapping == null || mapping.getType() != OptionType.INTEGER) {
       return Optional.empty();
     }
-    return mapping.getType() == OptionType.INTEGER
-        ? Optional.of(mapping.getAsInt()) : Optional.empty();
+    return Optional.of(mapping.getAsInt());
   }
 
   /**
@@ -32,11 +31,10 @@ public class OptionMapper {
    * @return optional of String
    */
   public Optional<String> mapToStr(OptionMapping mapping) {
-    if (mapping == null) {
+    if (mapping == null || mapping.getType() != OptionType.STRING) {
       return Optional.empty();
     }
-    return mapping.getType() == OptionType.STRING
-        ? Optional.of(mapping.getAsString()) : Optional.empty();
+    return Optional.of(mapping.getAsString());
   }
 
 }

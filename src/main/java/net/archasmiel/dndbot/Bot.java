@@ -1,12 +1,12 @@
 package net.archasmiel.dndbot;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.listener.MessageListener;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
 import net.dv8tion.jda.api.sharding.ShardManager;
@@ -24,7 +24,10 @@ public class Bot {
    * @param args default main method arguments
    */
   public static void main(String[] args) throws IOException {
-    ManaController.INSTANCE.readUsers();
+    new File("manaUsers").mkdirs();
+    new File("discordUsers").mkdirs();
+    ManaController.INSTANCE.loadUsers();
+    ManaController.INSTANCE.loadCharacters();
 
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder
         .createDefault(getToken());

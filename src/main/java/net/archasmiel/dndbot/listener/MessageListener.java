@@ -2,15 +2,14 @@ package net.archasmiel.dndbot.listener;
 
 import java.util.List;
 import net.archasmiel.dndbot.command.basic.Command;
-import net.archasmiel.dndbot.command.basic.GetAllUsersCommand;
 import net.archasmiel.dndbot.command.basic.GetUserCommand;
 import net.archasmiel.dndbot.command.basic.HelpCommand;
-import net.archasmiel.dndbot.command.roll.RollDiceCommand;
-import net.archasmiel.dndbot.command.roll.RollDiceShortCommand;
 import net.archasmiel.dndbot.command.stats.ChangeStatCommand;
 import net.archasmiel.dndbot.command.user.AddUserCommand;
 import net.archasmiel.dndbot.command.user.CastCommand;
 import net.archasmiel.dndbot.command.user.NewDayCommand;
+import net.archasmiel.dndbot.command.userops.GetManaUsersCommand;
+import net.archasmiel.dndbot.command.userops.SetManaUserCommand;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,10 +22,10 @@ import org.jetbrains.annotations.NotNull;
 public class MessageListener extends ListenerAdapter {
 
   private final List<Command> commands = List.of(
-      new HelpCommand(), new GetUserCommand(), new GetAllUsersCommand(),
-      new RollDiceCommand(), new RollDiceShortCommand(),
-      new AddUserCommand(), new CastCommand(), new NewDayCommand(),
-      new ChangeStatCommand()
+      new HelpCommand(), new GetUserCommand(),
+      new CastCommand(), new NewDayCommand(),
+      new AddUserCommand(), new ChangeStatCommand(),
+      new GetManaUsersCommand(), new SetManaUserCommand()
   );
 
   private final List<SlashCommandData> commandData = commands.stream()

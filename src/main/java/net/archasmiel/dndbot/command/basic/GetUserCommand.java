@@ -2,7 +2,7 @@ package net.archasmiel.dndbot.command.basic;
 
 import java.util.Optional;
 import net.archasmiel.dndbot.database.ManaController;
-import net.archasmiel.dndbot.database.ManaUser;
+import net.archasmiel.dndbot.database.objects.ManaUser;
 import net.archasmiel.dndbot.exception.NoManaUserFound;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -28,10 +28,12 @@ public class GetUserCommand extends Command {
     String msg;
 
     try {
-      Optional<ManaUser> manaUser = ManaController.INSTANCE.get(id);
+      ManaController.INSTANCE.discordUserCheck(id);
+      String muid = ManaController.INSTANCE.discordUsers.get(id).getManaUserId();
+      Optional<ManaUser> manaUser = ManaController.INSTANCE.getManaUser(muid);
       ManaUser user = manaUser.orElseThrow(NoManaUserFound::new);
 
-      msg = String.format("<@%s>, твої хар-ки: %s", id, user);
+      msg = String.format("`%s`, хар-ки: %s", muid, user);
     } catch (Exception e) {
       msg = e.getMessage();
     }

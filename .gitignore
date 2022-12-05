@@ -4,3 +4,5 @@
 mana.json
 users.json
 /src/main/resources/token
+/manaUsers/
+/discordUsers/
