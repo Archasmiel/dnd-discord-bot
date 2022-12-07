@@ -17,7 +17,7 @@ public class BotConfiguration {
   static {
     Configuration config = null;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    try (FileReader fileReader = new FileReader("token.json")) {
+    try (FileReader fileReader = new FileReader("config.json")) {
       config = gson.fromJson(fileReader, Configuration.class);
       System.out.printf("%s=%s%n%s=%s%n%s=%s%n%s=%s%n",
           "token", config.getToken(),
