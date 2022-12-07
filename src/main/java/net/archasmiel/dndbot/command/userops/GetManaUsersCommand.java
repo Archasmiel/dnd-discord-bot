@@ -44,7 +44,7 @@ public class GetManaUsersCommand extends Command {
           .filter(Objects::nonNull)
           .map(e -> {
             try {
-              String line = String.format("`%s` хар-ки: %s%n", e.getId(), e);
+              String line = String.format("`id=%s`: %s%n", e.getId(), e);
               return e.getId().equals(manaUserId) ? "__" + line + "__" : line;
             } catch (Exception ex) {
               return null;

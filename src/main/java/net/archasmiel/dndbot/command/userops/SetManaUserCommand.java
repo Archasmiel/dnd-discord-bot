@@ -5,6 +5,7 @@ import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.DiscordUser;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.util.exception.ManaUserAccessException;
 import net.archasmiel.dndbot.util.exception.NoManaUserFound;
 import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
 import net.archasmiel.dndbot.util.helper.ManaUserIdUtil;
@@ -47,6 +48,15 @@ public class SetManaUserCommand extends Command {
       }
 
       ManaUser manaUser = UserUtil.getManaUserOrError(newId.get());
+
+      String discordOwnerId = ManaController.INSTANCE.discordUsers.entrySet().stream()
+          .filter(e -> e.getValue().getManaUserIds().contains(newId.get()))
+          .findFirst()
+          .map(e -> e.getValue().getId())
+          .orElseThrow(NullPointerException::new);
+      if (!discordOwnerId.equals(discordUserId)) {
+        throw new ManaUserAccessException(newId.get());
+      }
 
       DiscordUser discordUser = UserUtil.getDiscordUserOrError(discordUserId);
       discordUser.setManaUserId(newId.get());
