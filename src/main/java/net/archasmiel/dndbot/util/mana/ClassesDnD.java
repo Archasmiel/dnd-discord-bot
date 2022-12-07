@@ -1,12 +1,12 @@
-package net.archasmiel.dndbot.util;
+package net.archasmiel.dndbot.util.mana;
 
 import java.util.Map;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.archasmiel.dndbot.util.maps.BonusSpellPoints;
-import net.archasmiel.dndbot.util.maps.MaxSpellLevel;
-import net.archasmiel.dndbot.util.maps.SpellPoints;
+import net.archasmiel.dndbot.util.mana.maps.BonusSpellPoints;
+import net.archasmiel.dndbot.util.mana.maps.MaxSpellLevel;
+import net.archasmiel.dndbot.util.mana.maps.SpellPoints;
 
 /**
  * Every D&D 3.5 class data.

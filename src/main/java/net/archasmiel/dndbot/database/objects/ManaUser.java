@@ -4,20 +4,22 @@ import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import net.archasmiel.dndbot.database.basic.Identified;
+import net.archasmiel.dndbot.database.basic.JsonConvertable;
 
 /**
  * Mana user with all parameters.
  */
 @Getter
+@Setter
 @AllArgsConstructor
-public class ManaUser implements JsonConvertible {
+public class ManaUser implements JsonConvertable, Identified {
 
   private String id;
   private String className;
-  @Setter
   private int level;
-  @Setter
   private int param;
+  @Setter
   private int currMana;
   private int maxMana;
 
@@ -45,17 +47,8 @@ public class ManaUser implements JsonConvertible {
    * @param maxMana maximum mana value
    * @param currMana current mana value
    */
-  public void setMana(int maxMana, int currMana) {
+  public void setMana(int currMana, int maxMana) {
     this.maxMana = maxMana;
-    this.currMana = currMana;
-  }
-
-  public void setMana(int mana) {
-    this.maxMana = mana;
-    this.currMana = mana;
-  }
-
-  public void setCurrMana(int currMana) {
     this.currMana = currMana;
   }
 

@@ -1,10 +1,9 @@
-package net.archasmiel.dndbot.command.user;
+package net.archasmiel.dndbot.command.manaops;
 
-import java.util.Optional;
 import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.ManaUser;
-import net.archasmiel.dndbot.exception.NoManaUserFound;
+import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
@@ -25,26 +24,22 @@ public class NewDayCommand extends Command {
 
   @Override
   public void process(SlashCommandInteraction interaction) {
-    String id = interaction.getUser().getId();
+    String discordUserId = interaction.getUser().getId();
     String msg;
 
     try {
-      ManaController.INSTANCE.discordUserCheck(id);
-      String muid = ManaController.INSTANCE.discordUsers.get(id).getManaUserId();
+      String manaUserId = UserUtil.getManaUserIdOrError(discordUserId);
+      ManaUser manaUser = UserUtil.getManaUserOrError(manaUserId);
 
-      Optional<ManaUser> manaUser = ManaController.INSTANCE.getManaUser(muid);
-      ManaUser user = manaUser.orElseThrow(NoManaUserFound::new);
+      manaUser.setCurrMana(manaUser.getMaxMana());
+      ManaController.INSTANCE.saveManaUser(manaUserId);
 
-      user.setCurrMana(user.getMaxMana());
-      ManaController.INSTANCE.saveManaUser(muid);
-
-      msg = String.format("<@%s> твоя мана восстановилась, сейчас её запас `%d/%d`",
-          interaction.getUser().getId(), user.getCurrMana(), user.getMaxMana());
+      msg = String.format("Твоя мана восстановилась, `%s` хар-ки: %s", manaUserId, manaUser);
     } catch (Exception e) {
       msg = e.getMessage();
     }
 
-    interaction.reply(msg).queue();
+    interaction.reply(String.format("<@%s>%n%s", discordUserId, msg)).queue();
   }
 
 

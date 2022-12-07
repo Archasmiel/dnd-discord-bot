@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util;
+package net.archasmiel.dndbot.util.mana;
 
 import java.util.Optional;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;

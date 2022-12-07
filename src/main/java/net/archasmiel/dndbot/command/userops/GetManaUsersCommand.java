@@ -1,10 +1,10 @@
 package net.archasmiel.dndbot.command.userops;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import net.archasmiel.dndbot.command.basic.Command;
-import net.archasmiel.dndbot.database.ManaController;
-import net.archasmiel.dndbot.database.objects.DiscordUser;
-import net.archasmiel.dndbot.exception.NoDiscordUserFound;
+import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
@@ -19,29 +19,44 @@ public class GetManaUsersCommand extends Command {
    */
   public GetManaUsersCommand() {
     super(
-        Commands.slash("35statsall", "Все персонажи из системы маны в виде списка")
+        Commands.slash("35stats", "Все персонажи из системы маны в виде списка")
     );
   }
 
   @Override
   public void process(SlashCommandInteraction interaction) {
-    String id = interaction.getUser().getId();
+    String discordUserId = interaction.getUser().getId();
     String msg;
 
     try {
-      ManaController.INSTANCE.discordUserCheck(id);
-      DiscordUser discordUser = ManaController.INSTANCE.getDiscordUser(id)
-          .orElseThrow(NoDiscordUserFound::new);
+      String manaUserId = UserUtil.getManaUserIdOrError(discordUserId);
+      List<String> manaUserIds = UserUtil.getDiscordUserOrError(discordUserId)
+          .getManaUserIds();
 
-      msg = discordUser.getManaUserIds().stream()
-          .map(ManaController.INSTANCE.manaUsers::get)
-          .map(e -> String.format("`%s`, хар-ки: %s%n", e.getId(), e))
+      msg = manaUserIds.stream()
+          .map(e -> {
+            try {
+              return UserUtil.getManaUserOrError(e);
+            } catch (Exception ex) {
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
+          .map(e -> {
+            try {
+              String line = String.format("`%s` хар-ки: %s%n", e.getId(), e);
+              return e.getId().equals(manaUserId) ? "__" + line + "__" : line;
+            } catch (Exception ex) {
+              return null;
+            }
+          })
+          .filter(Objects::nonNull)
           .collect(Collectors.joining());
     } catch (Exception e) {
       msg = e.getMessage();
     }
 
-    interaction.reply(msg).queue();
+    interaction.reply(String.format("<@%s>%n%s", discordUserId, msg)).queue();
   }
 
 

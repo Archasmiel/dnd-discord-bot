@@ -1,11 +1,11 @@
-package net.archasmiel.dndbot.exception;
+package net.archasmiel.dndbot.util.exception;
 
 /**
  * Exception for illegal parameters in command call.
  */
-public class IllegalParameters extends Exception {
+public class WrongCommandParameters extends Exception {
 
-  public IllegalParameters() {
+  public WrongCommandParameters() {
     super("Неправильные аргументы команды");
   }
 

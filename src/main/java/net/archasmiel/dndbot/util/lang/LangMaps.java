@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.lang;
+package net.archasmiel.dndbot.util.lang;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;

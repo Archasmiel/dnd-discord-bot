@@ -1,6 +1,6 @@
 package net.archasmiel.dndbot.command.basic;
 
-import net.archasmiel.dndbot.lang.LangMaps;
+import net.archasmiel.dndbot.util.lang.LangMaps;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 
@@ -21,7 +21,10 @@ public class HelpCommand extends Command {
 
   @Override
   public void process(SlashCommandInteraction interaction) {
-    interaction.reply(LangMaps.HELP_MESSAGE).queue();
+    String discordUserId = interaction.getUser().getId();
+    String msg = LangMaps.HELP_MESSAGE;
+
+    interaction.reply(String.format("<@%s>%n%s", discordUserId, msg)).queue();
   }
 
 }

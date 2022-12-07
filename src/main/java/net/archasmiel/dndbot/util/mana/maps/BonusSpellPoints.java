@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util.maps;
+package net.archasmiel.dndbot.util.mana.maps;
 
 import java.util.List;
 

@@ -1,16 +1,18 @@
-package net.archasmiel.dndbot.command.user;
+package net.archasmiel.dndbot.command.userops;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
-import net.archasmiel.dndbot.database.ManaUserIdGen;
+import net.archasmiel.dndbot.database.objects.DiscordUser;
 import net.archasmiel.dndbot.database.objects.ManaUser;
-import net.archasmiel.dndbot.exception.IllegalParameters;
-import net.archasmiel.dndbot.util.ClassesDnD;
-import net.archasmiel.dndbot.util.ManaQuad;
-import net.archasmiel.dndbot.util.OptionMapper;
+import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
+import net.archasmiel.dndbot.util.helper.ManaUserIdUtil;
+import net.archasmiel.dndbot.util.helper.UserUtil;
+import net.archasmiel.dndbot.util.mana.ClassesDnD;
+import net.archasmiel.dndbot.util.mana.ManaQuad;
+import net.archasmiel.dndbot.util.mana.OptionMapper;
 import net.dv8tion.jda.api.interactions.commands.Command.Choice;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -49,41 +51,43 @@ public class AddUserCommand extends Command {
 
   @Override
   public void process(SlashCommandInteraction interaction) {
-    String id = interaction.getUser().getId();
+    String discordUserId = interaction.getUser().getId();
     String msg;
 
     try {
-      ManaController.INSTANCE.discordUserCheck(id);
+      final DiscordUser discordUser = UserUtil.getDiscordUserOrError(discordUserId);
+
       Optional<String> className = OptionMapper.INSTANCE.mapToStr(interaction.getOption("class"));
       Optional<Integer> level = OptionMapper.INSTANCE.mapToInt(interaction.getOption("level"));
       Optional<Integer> param = OptionMapper.INSTANCE.mapToInt(interaction.getOption("param"));
       if (className.isEmpty() || level.isEmpty() || param.isEmpty()) {
-        throw new IllegalParameters();
+        throw new WrongCommandParameters();
       }
 
-      ManaUser manaUser = new ManaUser(ManaUserIdGen.getId(), null, 0, 0, 0, 0);
+      String manaUserId = ManaUserIdUtil.INSTANCE.getId();
+      ManaUser manaUser = new ManaUser(manaUserId, null, 0, 0, 0, 0);
       ManaQuad manaQuad = ClassesDnD.valueOf(className.get())
           .getMana(level.get(), param.get())
-          .orElseThrow(IllegalParameters::new);
+          .orElseThrow(WrongCommandParameters::new);
 
       manaUser.setAll(className.get(), level.get(), param.get(),
           manaQuad.getMaxMana(), manaQuad.getMaxMana());
 
       ManaController.INSTANCE.manaUsers.put(manaUser.getId(), manaUser);
-      ManaController.INSTANCE.discordUsers.get(id).getManaUserIds().add(manaUser.getId());
-      ManaController.INSTANCE.discordUsers.get(id).setManaUserId(manaUser.getId());
-      ManaController.INSTANCE.saveDiscordUser(id);
-      ManaController.INSTANCE.saveManaUser(manaUser.getId());
+      discordUser.getManaUserIds().add(manaUser.getId());
+      discordUser.setManaUserId(manaUser.getId());
+      ManaController.INSTANCE.saveDiscordUser(discordUserId);
+      ManaController.INSTANCE.saveManaUser(manaUserId);
 
-      msg = String.format("<@%s>, установлено максимальную ману в размере %d + %d = %d",
-          interaction.getUser().getId(), manaQuad.getSpellPoints(),
+      msg = String.format("Пользователь `%s` создан, установлено ману в размере `%d + %d = %d`",
+          manaUserId, manaQuad.getSpellPoints(),
           manaQuad.getBonusSpellPoints(), manaQuad.getMaxMana());
     } catch (Exception e) {
       msg = e.getMessage();
       e.printStackTrace();
     }
 
-    interaction.reply(msg).queue();
+    interaction.reply(String.format("<@%s>%n%s", discordUserId, msg)).queue();
   }
 
 }

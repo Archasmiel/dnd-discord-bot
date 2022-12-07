@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util;
+package net.archasmiel.dndbot.util.mana;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.exception;
+package net.archasmiel.dndbot.util.exception;
 
 /**
  * Exception for no user in database.

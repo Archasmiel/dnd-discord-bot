@@ -6,13 +6,15 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import net.archasmiel.dndbot.database.basic.Identified;
+import net.archasmiel.dndbot.database.basic.JsonConvertable;
 
 /**
  * Mana user with all parameters.
  */
 @Getter
 @AllArgsConstructor
-public class DiscordUser implements JsonConvertible {
+public class DiscordUser implements JsonConvertable, Identified {
 
   private String id;
 
@@ -46,10 +48,11 @@ public class DiscordUser implements JsonConvertible {
 
   @Override
   public String toString() {
-    return "DiscordUser{" +
-        "id='" + id + '\'' +
-        ", manaUserIds=" + manaUserIds +
-        ", manaUserId='" + manaUserId + '\'' +
-        '}';
+    return "DiscordUser{"
+        + "id='" + id + '\''
+        + ", manaUserIds=" + manaUserIds
+        + ", manaUserId='" + manaUserId + '\''
+        + '}';
   }
+
 }

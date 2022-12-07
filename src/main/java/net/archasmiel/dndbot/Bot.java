@@ -1,11 +1,8 @@
 package net.archasmiel.dndbot;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.listener.MessageListener;
+import net.archasmiel.dndbot.util.config.BotConfiguration;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.sharding.DefaultShardManagerBuilder;
@@ -20,17 +17,12 @@ public class Bot {
 
   /**
    * Bot starting method.
-
-   * @param args default main method arguments
    */
-  public static void main(String[] args) throws IOException {
-    new File("manaUsers").mkdirs();
-    new File("discordUsers").mkdirs();
-    ManaController.INSTANCE.loadUsers();
-    ManaController.INSTANCE.loadCharacters();
+  public static void main(String[] args) {
+    ManaController.INSTANCE.loadData();
 
     DefaultShardManagerBuilder builder = DefaultShardManagerBuilder
-        .createDefault(getToken());
+        .createDefault(BotConfiguration.token());
     builder.setStatus(OnlineStatus.ONLINE);
     builder.enableIntents(
         GatewayIntent.GUILD_MEMBERS,
@@ -42,25 +34,6 @@ public class Bot {
 
     ShardManager shardManager = builder.build();
     shardManager.addEventListener(new MessageListener());
-  }
-
-  /**
-   * Bot token getting method.
-   * Token must be in 'resources/token' file.
-   * 'token' is a file without extension.
-   * 'resources' is a default Maven directory.
-
-   * @return String value with token
-   */
-  public static String getToken() throws IOException {
-    try (InputStream is = Bot.class.getResourceAsStream("/token")) {
-      if (is == null) {
-        throw new IllegalStateException("Token read exception!");
-      }
-      return new String(is.readAllBytes(), StandardCharsets.UTF_8);
-    } catch (Exception e) {
-      throw new IOException();
-    }
   }
 
 }
