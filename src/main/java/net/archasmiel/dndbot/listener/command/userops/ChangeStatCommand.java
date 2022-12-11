@@ -1,14 +1,14 @@
-package net.archasmiel.dndbot.command.manaops;
+package net.archasmiel.dndbot.listener.command.userops;
 
 import java.util.Optional;
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
+import net.archasmiel.dndbot.util.helper.OptionMapper;
 import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.archasmiel.dndbot.util.mana.ClassesDnD;
 import net.archasmiel.dndbot.util.mana.ManaQuad;
-import net.archasmiel.dndbot.util.mana.OptionMapper;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -27,10 +27,9 @@ public class ChangeStatCommand extends Command {
     super(
         Commands.slash("35changestat", "Команда для изменения параметра").addOptions(
             new OptionData(OptionType.STRING, "name", "Название характеристики", true)
-              .addChoice("level", "Уровень")
-              .addChoice("param", "Основной параметр персонажа"),
-            new OptionData(OptionType.INTEGER, "value", "Кол-во очков/уровень", true)
-      )
+              .addChoice("Уровень", "level")
+              .addChoice("Параметр", "param"),
+            new OptionData(OptionType.INTEGER, "value", "Кол-во очков/уровень", true))
     );
   }
 
@@ -43,8 +42,8 @@ public class ChangeStatCommand extends Command {
       String manaUserId = UserUtil.getManaUserIdOrError(discordUserId);
       ManaUser manaUser = UserUtil.getManaUserOrError(manaUserId);
 
-      Optional<String> statName = OptionMapper.INSTANCE.mapToStr(interaction.getOption("name"));
-      Optional<Integer> value = OptionMapper.INSTANCE.mapToInt(interaction.getOption("value"));
+      Optional<String> statName = OptionMapper.mapToStr(interaction.getOption("name"));
+      Optional<Integer> value = OptionMapper.mapToInt(interaction.getOption("value"));
       if (statName.isEmpty() || value.isEmpty()) {
         throw new WrongCommandParameters();
       }

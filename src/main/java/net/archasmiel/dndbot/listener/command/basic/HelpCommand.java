@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.command.basic;
+package net.archasmiel.dndbot.listener.command.basic;
 
 import net.archasmiel.dndbot.util.lang.LangMaps;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;

@@ -1,9 +1,9 @@
-package net.archasmiel.dndbot.command.userops;
+package net.archasmiel.dndbot.listener.command.userops;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import net.archasmiel.dndbot.command.basic.Command;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;

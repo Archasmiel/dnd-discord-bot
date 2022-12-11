@@ -38,7 +38,7 @@ public class ManaUserIdUtil {
   }
 
   public boolean checkId(String id) {
-    return id.length() != 16 || !id.matches("[\\da-f]{16}+");
+    return id.length() == 16 && id.matches("[\\da-f]{16}+");
   }
 
 }

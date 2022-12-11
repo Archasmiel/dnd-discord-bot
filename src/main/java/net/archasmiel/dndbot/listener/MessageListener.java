@@ -2,16 +2,16 @@ package net.archasmiel.dndbot.listener;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.archasmiel.dndbot.command.basic.Command;
-import net.archasmiel.dndbot.command.basic.HelpCommand;
-import net.archasmiel.dndbot.command.manaops.CastCommand;
-import net.archasmiel.dndbot.command.manaops.ChangeStatCommand;
-import net.archasmiel.dndbot.command.manaops.NewDayCommand;
-import net.archasmiel.dndbot.command.userops.AddUserCommand;
-import net.archasmiel.dndbot.command.userops.GetManaUsersCommand;
-import net.archasmiel.dndbot.command.userops.SetManaUserCommand;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.DiscordUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
+import net.archasmiel.dndbot.listener.command.basic.HelpCommand;
+import net.archasmiel.dndbot.listener.command.manaops.CastCommand;
+import net.archasmiel.dndbot.listener.command.manaops.NewDayCommand;
+import net.archasmiel.dndbot.listener.command.userops.AddUserCommand;
+import net.archasmiel.dndbot.listener.command.userops.ChangeStatCommand;
+import net.archasmiel.dndbot.listener.command.userops.GetManaUsersCommand;
+import net.archasmiel.dndbot.listener.command.userops.SetManaUserCommand;
 import net.archasmiel.dndbot.util.config.BotConfiguration;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.guild.GuildReadyEvent;
@@ -34,7 +34,7 @@ public class MessageListener extends ListenerAdapter {
   );
   private final List<SlashCommandData> commandData = commands.stream()
       .map(Command::data).toList();
-  private final List<String> guilds = BotConfiguration.guilds();
+  private final List<String> guilds = BotConfiguration.getGuilds();
 
   @Override
   public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {

@@ -1,11 +1,11 @@
-package net.archasmiel.dndbot.command.manaops;
+package net.archasmiel.dndbot.listener.command.manaops;
 
 import java.util.Objects;
 import java.util.stream.IntStream;
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.basic.Pair;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
 import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.archasmiel.dndbot.util.mana.maps.SpellCost;
@@ -31,7 +31,7 @@ public class CastCommand extends Command {
             new OptionData(OptionType.INTEGER, "level", "Круг заклинания", true)
                 .addChoices(
                     IntStream.range(0, 10).boxed()
-                        .map(e -> new Choice(Integer.toString(e), e))
+                        .map(e -> new Choice(e + " круг", e))
                         .toList()
                 )
         )

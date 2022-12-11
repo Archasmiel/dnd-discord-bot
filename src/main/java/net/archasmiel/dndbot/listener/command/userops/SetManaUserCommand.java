@@ -1,16 +1,16 @@
-package net.archasmiel.dndbot.command.userops;
+package net.archasmiel.dndbot.listener.command.userops;
 
 import java.util.Optional;
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.DiscordUser;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.exception.ManaUserAccessException;
 import net.archasmiel.dndbot.util.exception.NoManaUserFound;
 import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
 import net.archasmiel.dndbot.util.helper.ManaUserIdUtil;
+import net.archasmiel.dndbot.util.helper.OptionMapper;
 import net.archasmiel.dndbot.util.helper.UserUtil;
-import net.archasmiel.dndbot.util.mana.OptionMapper;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -39,15 +39,13 @@ public class SetManaUserCommand extends Command {
     String msg;
 
     try {
-      Optional<String> newId = OptionMapper.INSTANCE.mapToStr(interaction.getOption("id"));
-      if (newId.isEmpty() || ManaUserIdUtil.INSTANCE.checkId(newId.get())) {
+      Optional<String> newId = OptionMapper.mapToStr(interaction.getOption("id"));
+      if (newId.isEmpty() || !ManaUserIdUtil.INSTANCE.checkId(newId.get())) {
         throw new WrongCommandParameters();
       }
       if (!ManaController.INSTANCE.manaUsers.containsKey(newId.get())) {
         throw new NoManaUserFound();
       }
-
-      ManaUser manaUser = UserUtil.getManaUserOrError(newId.get());
 
       String discordOwnerId = ManaController.INSTANCE.discordUsers.entrySet().stream()
           .filter(e -> e.getValue().getManaUserIds().contains(newId.get()))
@@ -61,6 +59,8 @@ public class SetManaUserCommand extends Command {
       DiscordUser discordUser = UserUtil.getDiscordUserOrError(discordUserId);
       discordUser.setManaUserId(newId.get());
       ManaController.INSTANCE.saveDiscordUser(discordUserId);
+
+      ManaUser manaUser = UserUtil.getManaUserOrError(newId.get());
 
       msg = String.format(
           "Пользователь изменён на `%s`, хар-ки: %s%n", newId.get(), manaUser);

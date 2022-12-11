@@ -1,8 +1,8 @@
-package net.archasmiel.dndbot.command.manaops;
+package net.archasmiel.dndbot.listener.command.manaops;
 
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import java.io.FileReader;
 import java.util.List;
 import lombok.Getter;
+import net.archasmiel.dndbot.Bot;
 
 /**
  * Bot configuration data.
@@ -15,39 +16,40 @@ public class BotConfiguration {
   private static final Configuration CONFIGURATION;
 
   static {
+    String msg = null;
     Configuration config = null;
     Gson gson = new GsonBuilder().setPrettyPrinting().create();
     try (FileReader fileReader = new FileReader("config.json")) {
       config = gson.fromJson(fileReader, Configuration.class);
-      System.out.printf("%s=%s%n%s=%s%n%s=%s%n%s=%s%n",
-          "token", config.getToken(),
-          "guilds", config.getGuilds(),
-          "discordUsersFolder", config.getDiscordUsersFolder(),
-          "manaUsersFolder", config.getManaUsersFolder());
+      if (config == null) {
+        throw new NullPointerException();
+      }
+      msg = config.toString();
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
       CONFIGURATION = config;
     }
+    Bot.LOGGER.info(msg);
   }
 
   private BotConfiguration() {
 
   }
 
-  public static String token() {
+  public static String getToken() {
     return CONFIGURATION.getToken();
   }
 
-  public static List<String> guilds() {
+  public static List<String> getGuilds() {
     return CONFIGURATION.getGuilds();
   }
 
-  public static String discordUsersFolder() {
+  public static String getDiscordUsersFolder() {
     return CONFIGURATION.getDiscordUsersFolder();
   }
 
-  public static String manaUsersFolder() {
+  public static String getManaUsersFolder() {
     return CONFIGURATION.getManaUsersFolder();
   }
 

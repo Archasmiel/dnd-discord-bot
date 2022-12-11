@@ -15,18 +15,18 @@ public class ManaController {
   public static final ManaController INSTANCE = new ManaController();
 
   public final UserMap<ManaUser> manaUsers =
-      new UserMap<>(BotConfiguration.manaUsersFolder(), ManaUser.class);
+      new UserMap<>(BotConfiguration.getManaUsersFolder(), ManaUser.class);
   public final UserMap<DiscordUser> discordUsers =
-      new UserMap<>(BotConfiguration.discordUsersFolder(), DiscordUser.class);
+      new UserMap<>(BotConfiguration.getDiscordUsersFolder(), DiscordUser.class);
 
   /**
    * Load all users.
    */
   public void loadData() {
-    if (!new File(BotConfiguration.discordUsersFolder()).mkdir()) {
+    if (!new File(BotConfiguration.getDiscordUsersFolder()).mkdir()) {
       discordUsers.readData();
     }
-    if (!new File(BotConfiguration.manaUsersFolder()).mkdir()) {
+    if (!new File(BotConfiguration.getManaUsersFolder()).mkdir()) {
       manaUsers.readData();
       ManaUserIdUtil.INSTANCE.addIds(manaUsers.keySet());
     }

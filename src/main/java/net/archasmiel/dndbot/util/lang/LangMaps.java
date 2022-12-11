@@ -17,7 +17,8 @@ public class LangMaps {
       new SimpleEntry<>("35newday", "получить полную ману (новый день)"),
       new SimpleEntry<>("35cast <spellLevel>", "применить заклинание нек-во уровня"),
       new SimpleEntry<>("35changestat <statName> <value>", "изменение параметра персонажа"),
-      new SimpleEntry<>("35setuser <id>", "изменение текущего персонажа на другого (информация id в /35stats)")
+      new SimpleEntry<>("35setuser <id>", "изменение текущего персонажа на другого "
+          + "(информация id в /35stats)")
   );
 
   public static final String HELP_MESSAGE = COMMAND_DESCRIPTION_MAP.entrySet().stream()

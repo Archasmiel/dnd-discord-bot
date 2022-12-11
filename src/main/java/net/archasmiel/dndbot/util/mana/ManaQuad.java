@@ -2,13 +2,11 @@ package net.archasmiel.dndbot.util.mana;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Data structure for mana details.
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class ManaQuad {
 

@@ -1,4 +1,4 @@
-package net.archasmiel.dndbot.util.mana;
+package net.archasmiel.dndbot.util.helper;
 
 import java.util.Optional;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -9,7 +9,9 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
  */
 public class OptionMapper {
 
-  public static final OptionMapper INSTANCE = new OptionMapper();
+  private OptionMapper() {
+
+  }
 
   /**
    * Get optional of Integer from OptionMapping.
@@ -17,7 +19,7 @@ public class OptionMapper {
    * @param mapping int mapping
    * @return optional of Integer
    */
-  public Optional<Integer> mapToInt(OptionMapping mapping) {
+  public static Optional<Integer> mapToInt(OptionMapping mapping) {
     if (mapping == null || mapping.getType() != OptionType.INTEGER) {
       return Optional.empty();
     }
@@ -30,7 +32,7 @@ public class OptionMapper {
    * @param mapping int mapping
    * @return optional of String
    */
-  public Optional<String> mapToStr(OptionMapping mapping) {
+  public static Optional<String> mapToStr(OptionMapping mapping) {
     if (mapping == null || mapping.getType() != OptionType.STRING) {
       return Optional.empty();
     }

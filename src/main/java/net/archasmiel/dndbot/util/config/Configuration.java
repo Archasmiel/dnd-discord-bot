@@ -3,13 +3,11 @@ package net.archasmiel.dndbot.util.config;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /**
  * Configuration information object.
  */
 @Getter
-@ToString
 @AllArgsConstructor
 public class Configuration {
 
@@ -18,4 +16,9 @@ public class Configuration {
   private final String discordUsersFolder;
   private final String manaUsersFolder;
 
+  @Override
+  public String toString() {
+    return String.format("Configuration {%n\ttoken=%s%n\tguilds=%s%n\tdiscordUsersFolder=%s"
+        + "%n\tmanaUsersFolder=%s%n}", token, guilds, discordUsersFolder, manaUsersFolder);
+  }
 }

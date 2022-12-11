@@ -1,18 +1,18 @@
-package net.archasmiel.dndbot.command.userops;
+package net.archasmiel.dndbot.listener.command.userops;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.IntStream;
-import net.archasmiel.dndbot.command.basic.Command;
 import net.archasmiel.dndbot.database.ManaController;
 import net.archasmiel.dndbot.database.objects.DiscordUser;
 import net.archasmiel.dndbot.database.objects.ManaUser;
+import net.archasmiel.dndbot.listener.command.basic.Command;
 import net.archasmiel.dndbot.util.exception.WrongCommandParameters;
 import net.archasmiel.dndbot.util.helper.ManaUserIdUtil;
+import net.archasmiel.dndbot.util.helper.OptionMapper;
 import net.archasmiel.dndbot.util.helper.UserUtil;
 import net.archasmiel.dndbot.util.mana.ClassesDnD;
 import net.archasmiel.dndbot.util.mana.ManaQuad;
-import net.archasmiel.dndbot.util.mana.OptionMapper;
 import net.dv8tion.jda.api.interactions.commands.Command.Choice;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -57,9 +57,9 @@ public class AddUserCommand extends Command {
     try {
       final DiscordUser discordUser = UserUtil.getDiscordUserOrError(discordUserId);
 
-      Optional<String> className = OptionMapper.INSTANCE.mapToStr(interaction.getOption("class"));
-      Optional<Integer> level = OptionMapper.INSTANCE.mapToInt(interaction.getOption("level"));
-      Optional<Integer> param = OptionMapper.INSTANCE.mapToInt(interaction.getOption("param"));
+      Optional<String> className = OptionMapper.mapToStr(interaction.getOption("class"));
+      Optional<Integer> level = OptionMapper.mapToInt(interaction.getOption("level"));
+      Optional<Integer> param = OptionMapper.mapToInt(interaction.getOption("param"));
       if (className.isEmpty() || level.isEmpty() || param.isEmpty()) {
         throw new WrongCommandParameters();
       }
