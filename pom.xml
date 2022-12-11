@@ -12,14 +12,22 @@
   </parent>
 
   <groupId>net.archasmiel</groupId>
-  <artifactId>dnd-discord-bot</artifactId>
+  <artifactId>dnd-mana-bot</artifactId>
   <name>DnD 3.5e Mana Bot</name>
   <version>1.6</version>
 
   <properties>
     <maven.compiler.source>18</maven.compiler.source>
     <maven.compiler.target>18</maven.compiler.target>
-    <fully.qualified.main.class>net.archasmiel.dndbot.Bot</fully.qualified.main.class>
+    <main.class>net.archasmiel.dndmanabot.BotApplication</main.class>
+
+    <lombok.version>1.18.24</lombok.version>
+    <jda.version>5.0.0-alpha.21</jda.version>
+    <gson.version>2.10</gson.version>
+    <slf4j.version>2.0.5</slf4j.version>
+    <plugin.jacoco.version>0.8.8</plugin.jacoco.version>
+    <plugin.assembly.version>3.4.2</plugin.assembly.version>
+    <plugin.compiler.version>3.8.1</plugin.compiler.version>
   </properties>
 
   <dependencies>
@@ -27,37 +35,40 @@
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>${lombok.version}</version>
     </dependency>
 
     <!-- Discord -->
     <dependency>
       <groupId>net.dv8tion</groupId>
       <artifactId>JDA</artifactId>
-      <version>5.0.0-alpha.21</version>
+      <version>${jda.version}</version>
     </dependency>
 
     <!-- JSONs -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>2.10</version>
+      <version>${gson.version}</version>
     </dependency>
 
+    <!-- SLF4J -->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <version>2.0.5</version>
+      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <version>2.0.5</version>
+      <version>${slf4j.version}</version>
     </dependency>
 
+    <!-- Maven Assembly Plugin -->
     <dependency>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-assembly-plugin</artifactId>
-      <version>3.4.2</version>
+      <version>${plugin.assembly.version}</version>
       <type>maven-plugin</type>
     </dependency>
   </dependencies>
@@ -70,17 +81,17 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>${plugin.compiler.version}</version>
         <configuration>
-          <source>18</source>
-          <target>18</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.4.2</version>
+        <version>${plugin.assembly.version}</version>
         <executions>
           <execution>
             <phase>package</phase> <!-- bind to the packaging phase -->
@@ -95,7 +106,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>net.archasmiel.dndbot.Bot</mainClass>
+              <mainClass>${main.class}</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -104,7 +115,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.8</version>
+        <version>${plugin.jacoco.version}</version>
         <executions>
           <execution>
             <goals>
